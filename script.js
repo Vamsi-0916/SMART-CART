@@ -1,69 +1,216 @@
-let currentCart = "Cart";
-let carts = {
-  Cart: [],
-  Wishlist: []
-};
+const products = [
+  {
+  id: 5,
+  name: "Portable Charger",
+  price: 899,
+  image: "https://via.placeholder.com/200x150.png?text=Charger"
+  },
+  {
+    id: 6,
+    name: "USB-C Cable",
+    price: 299,
+    image: "https://via.placeholder.com/200x150.png?text=USB-C+Cable"
+  },
+  {
+    id: 7,
+    name: "Noise Cancelling Earbuds",
+    price: 1599,
+    image: "https://via.placeholder.com/200x150.png?text=Earbuds"
+  },
+  {
+    id: 8,
+    name: "Laptop Bag",
+    price: 1199,
+    image: "https://via.placeholder.com/200x150.png?text=Laptop+Bag"
+  },
+  {
+    id: 9,
+    name: "Mechanical Keyboard",
+    price: 3499,
+    image: "https://via.placeholder.com/200x150.png?text=Keyboard"
+  },
+  {
+    id: 10,
+    name: "LED Desk Lamp",
+    price: 699,
+    image: "https://via.placeholder.com/200x150.png?text=Desk+Lamp"
+  },
+  {
+    id: 11,
+    name: "External Hard Drive",
+    price: 4999,
+    image: "https://via.placeholder.com/200x150.png?text=Hard+Drive"
+  },
+  {
+    id: 12,
+    name: "Fitness Tracker",
+    price: 2799,
+    image: "https://via.placeholder.com/200x150.png?text=Fitness+Tracker"
+  },
+  {
+    id: 13,
+    name: "Wireless Charger",
+    price: 1099,
+    image: "https://via.placeholder.com/200x150.png?text=Wireless+Charger"
+  },
+  {
+    id: 14,
+    name: "Bluetooth Speaker",
+    price: 1899,
+    image: "https://via.placeholder.com/200x150.png?text=Speaker"
+  },
 
-function loadCart() {
-  const data = localStorage.getItem("smartCartData");
-  if (data) {
-    carts = JSON.parse(data);
+  {
+    id: 1,
+    name: "Bluetooth Headphones",
+    price: 1299,
+    image: "https://via.placeholder.com/200x150.png?text=Headphones"
+  },
+  {
+    id: 2,
+    name: "Smart Watch",
+    price: 2499,
+    image: "https://via.placeholder.com/200x150.png?text=Smart+Watch"
+  },
+  {
+    id: 3,
+    name: "Wireless Mouse",
+    price: 599,
+    image: "https://via.placeholder.com/200x150.png?text=Mouse"
+  },
+  {
+    id: 4,
+    name: "Laptop Stand",
+    price: 999,
+    image: "https://via.placeholder.com/200x150.png?text=Laptop+Stand"
   }
-  renderItems();
+];
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+const productList = document.getElementById("productList");
+const cartList = document.getElementById("cartList");
+const wishlistList = document.getElementById("wishlist");
+
+function saveData() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("wishlist", JSON.stringify(wishlist));
 }
 
-function saveCart() {
-  localStorage.setItem("smartCartData", JSON.stringify(carts));
+function searchProducts() {
+  const keyword = document.getElementById("searchInput").value.toLowerCase();
+  const filtered = products.filter(p => p.name.toLowerCase().includes(keyword));
+  renderProducts(filtered);
 }
 
-function switchCart(cartName) {
-  currentCart = cartName;
-  document.getElementById("currentCart").innerText = cartName;
-  renderItems();
+function clearSearch() {
+  document.getElementById("searchInput").value = "";
+  renderProducts();
 }
 
-function renderItems() {
-  const list = document.getElementById("itemList");
-  list.innerHTML = "";
-  let total = 0;
 
-  carts[currentCart].forEach((item, index) => {
+function renderLists() {
+  cartList.innerHTML = "";
+  wishlistList.innerHTML = "";
+
+  let cartTotal = 0;
+  let wishlistTotal = 0;
+
+  cart.forEach(item => {
+    const quantity = item.quantity || 1;
     const li = document.createElement("li");
-
-    const text = document.createElement("span");
-    text.textContent = `${item.name} × ${item.qty} - ₹${item.price * item.qty}`;
-    li.appendChild(text);
-
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "Remove";
-    delBtn.onclick = () => {
-      carts[currentCart].splice(index, 1);
-      saveCart();
-      renderItems();
-    };
-    li.appendChild(delBtn);
-
-    list.appendChild(li);
-    total += item.price * item.qty;
+    li.innerHTML = `
+      ${item.name} x ${quantity} - ₹${item.price * quantity}
+      <button onclick="removeFromCart(${item.id})">❌ Remove</button>
+    `;
+    cartList.appendChild(li);
+    cartTotal += item.price * quantity;
   });
 
-  document.getElementById("totalPrice").textContent = `Total: ₹${total}`;
+  wishlist.forEach(item => {
+    const quantity = item.quantity || 1;
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${item.name} x ${quantity} - ₹${item.price * quantity}
+      <button onclick="removeFromWishlist(${item.id})">❌ Remove</button>
+    `;
+    wishlistList.appendChild(li);
+    wishlistTotal += item.price * quantity;
+  });
+
+  // Add totals
+  const cartTotalEl = document.createElement("li");
+  cartTotalEl.style.fontWeight = "bold";
+  cartTotalEl.textContent = `Total: ₹${cartTotal}`;
+  cartList.appendChild(cartTotalEl);
+
+  const wishlistTotalEl = document.createElement("li");
+  wishlistTotalEl.style.fontWeight = "bold";
+  wishlistTotalEl.textContent = `Total: ₹${wishlistTotal}`;
+  wishlistList.appendChild(wishlistTotalEl);
 }
 
-document.getElementById("itemForm").addEventListener("submit", function (e) {
-  e.preventDefault();
+function renderProducts(filteredProducts = products) {
+  productList.innerHTML = "";
 
-  const name = document.getElementById("itemName").value.trim();
-  const price = parseFloat(document.getElementById("itemPrice").value);
-  const qty = parseInt(document.getElementById("itemQty").value);
+  filteredProducts.forEach(product => {
+    const card = document.createElement("div");
+    card.className = "product-card";
 
-  if (!name || isNaN(price) || isNaN(qty)) return;
+    card.innerHTML = `
+      <img src="${product.image}" alt="${product.name}" />
+      <h3>${product.name}</h3>
+      <p>Price: ₹${product.price}</p>
+      <button onclick="addToCart(${product.id})">Add to Cart</button>
+      <button onclick="addToWishlist(${product.id})">Add to Wishlist</button>
+    `;
 
-  carts[currentCart].push({ name, price, qty });
-  saveCart();
-  renderItems();
+    productList.appendChild(card);
+  });
+}
 
-  this.reset();
-});
 
-loadCart();
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  const existing = cart.find(item => item.id === id);
+
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ ...product, quantity: 1 });
+  }
+
+  saveData();
+  renderLists();
+}
+
+function addToWishlist(id) {
+  const product = products.find(p => p.id === id);
+  const existing = wishlist.find(item => item.id === id);
+
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    wishlist.push({ ...product, quantity: 1 });
+  }
+
+  saveData();
+  renderLists();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(item => item.id !== id);
+  saveData();
+  renderLists();
+}
+
+function removeFromWishlist(id) {
+  wishlist = wishlist.filter(item => item.id !== id);
+  saveData();
+  renderLists();
+}
+
+// Initial render
+renderProducts();
+renderLists();

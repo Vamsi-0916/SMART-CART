@@ -1,91 +1,104 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f7f7f7;
-  margin: 0;
-  padding: 0;
-}
-
-.container {
-  max-width: 600px;
-  margin: auto;
-  padding: 2rem;
-  background: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  margin: 1rem;
+  background-color: #f2f2f2;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 1rem;
+  color: #333;
 }
 
-form {
+.product-section, .cart-wishlist-section {
+  margin: 2rem auto;
+  max-width: 900px;
+}
+
+.product-list {
   display: flex;
-  gap: 10px;
-  margin-bottom: 1rem;
   flex-wrap: wrap;
+  gap: 1rem;
 }
 
-input[type="text"],
-input[type="number"] {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.product-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 5px #ccc;
+  padding: 1rem;
+  width: 200px;
 }
 
-button {
-  padding: 8px 16px;
-  background: #007bff;
+.product-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.product-card button {
+  margin: 0.5rem 0.2rem 0 0;
+  padding: 0.4rem 0.6rem;
+  background-color: #007bff;
   border: none;
   color: white;
   border-radius: 4px;
   cursor: pointer;
 }
 
-button:hover {
-  background: #0056b3;
+.product-card button:hover {
+  background-color: #0056b3;
 }
 
-.cart-switcher {
-  text-align: center;
-  margin-bottom: 1rem;
+ul {
+  list-style-type: none;
+  padding-left: 1rem;
 }
 
-.cart-switcher button {
-  margin: 0 5px;
-  background: #28a745;
-}
-
-.cart-switcher button:hover {
-  background: #218838;
-}
-
-#itemList {
-  list-style: none;
-  padding: 0;
-}
-
-#itemList li {
+.cart-wishlist-section {
   display: flex;
-  justify-content: space-between;
-  background: #f1f1f1;
-  margin-bottom: 8px;
-  padding: 10px;
+  gap: 2rem;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+li button {
+  margin-left: 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 3px 6px;
   border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
 }
 
-#itemList li span {
+li button:hover {
+  background-color: #a82833;
+}
+
+.search-bar {
+  max-width: 900px;
+  margin: 0 auto 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.search-bar input {
   flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
-#itemList li button {
-  background: red;
-  margin-left: 8px;
+.search-bar button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-#totalPrice {
-  text-align: right;
-  font-weight: bold;
-  margin-top: 1rem;
+.search-bar button:hover {
+  background-color: #0056b3;
 }
