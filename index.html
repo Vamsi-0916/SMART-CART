@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartCart</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🛒 SmartCart</h1>
+
+    <div class="cart-switcher">
+      <button onclick="switchCart('Cart')">My Cart</button>
+      <button onclick="switchCart('Wishlist')">Wishlist</button>
+    </div>
+
+    <form id="itemForm">
+      <input type="text" id="itemName" placeholder="Item Name" required />
+      <input type="number" id="itemPrice" placeholder="Price" required />
+      <input type="number" id="itemQty" placeholder="Quantity" value="1" min="1" required />
+      <button type="submit">Add Item</button>
+    </form>
+
+    <h2 id="currentCart">Cart</h2>
+    <ul id="itemList"></ul>
+
+    <div id="totalPrice">Total: ₹0</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 2rem;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+input[type="text"],
+input[type="number"] {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 8px 16px;
+  background: #007bff;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+.cart-switcher {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.cart-switcher button {
+  margin: 0 5px;
+  background: #28a745;
+}
+
+.cart-switcher button:hover {
+  background: #218838;
+}
+
+#itemList {
+  list-style: none;
+  padding: 0;
+}
+
+#itemList li {
+  display: flex;
+  justify-content: space-between;
+  background: #f1f1f1;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+#itemList li span {
+  flex: 1;
+}
+
+#itemList li button {
+  background: red;
+  margin-left: 8px;
+}
+
+#totalPrice {
+  text-align: right;
+  font-weight: bold;
+  margin-top: 1rem;
+}
