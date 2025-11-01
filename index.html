@@ -1,38 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SmartCart</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SmartCart — Upgraded</title>
+
+  <!-- Link to external CSS (create style.css or paste CSS later) -->
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Optional: include a favicon or fonts here -->
 </head>
 <body>
-  <h1>🛒 SmartCart</h1>
-  
-  <div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Search products..." />
-  <button onclick="searchProducts()">🔍 Search</button>
-  <button onclick="clearSearch()">✖ Clear</button>
-  </div>
 
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-left">
+      <h1 class="brand">🛒 SmartCart 
+        <!--<span id="itemCountBadge" class="badge">(0)</span>-->  <!--for cart item count at smart cart heading-->
+      </h1>
+      <p class="tagline">Fast. Simple. Delightful shopping.</p>
+    </div>
 
-  <div class="product-section">
+    <div class="header-controls">
+      <!-- <button id="themeToggle" aria-label="Toggle theme" class="btn small">🌙</button> -->
+
+      <!-- Floating cart summary (also shown in corner) -->
+      <div id="cartSummary" class="cart-summary" aria-live="polite">
+        <span>Total: ₹<span id="cartTotal">0</span></span>
+        <button id="openCartBtn" class="btn small">Open</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SEARCH / FILTER / SORT BAR -->
+  <section class="controls" aria-label="Search and filters">
+    <div class="search-wrap">
+      <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products" />
+      <button id="clearSearch" class="btn">✖ Clear</button>
+    </div>
+
+    <div class="filter-wrap">
+      <label for="sortOption">Sort:</label>
+      <select id="sortOption" aria-label="Sort products">
+        <option value="">Default</option>
+        <option value="priceLow">Price: Low → High</option>
+        <option value="priceHigh">Price: High → Low</option>
+        <option value="name">Name: A → Z</option>
+      </select>
+
+      <label for="minPrice">Min ₹</label>
+      <input id="minPrice" type="number" min="0" placeholder="0" />
+
+      <label for="maxPrice">Max ₹</label>
+      <input id="maxPrice" type="number" min="0" placeholder="5000" />
+
+      <button id="applyFilters" class="btn">Apply</button>
+      <button id="clearFilters" class="btn outline">Reset</button>
+    </div>
+  </section>
+
+  <!-- MAIN LAYOUT -->
+  <main class="main-grid">
+
+    <!-- PRODUCTS SECTION -->
+    <section id="products">
+  <div class="products-header">
     <h2>Products</h2>
-    <div id="productList" class="product-list"></div>
-  </div>
-
-  <div class="cart-wishlist-section">
-    <div>
-      <h2>Cart 🧺</h2>
-      <ul id="cartList"></ul>
-    </div>
-
-    <div>
-      <h2>Wishlist 💖</h2>
-      <ul id="wishlist"></ul>
+    <div class="view-controls">
+      <button id="gridViewBtn" class="btn small active">Grid</button>
+      <button id="listViewBtn" class="btn small">List</button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <div class="product-container">
+    <ul id="productList" class="product-list"></ul>
+  </div>
+</section>
+
+
+    <!-- SIDEBAR: Cart & Wishlist -->
+    <aside class="sidebar" aria-label="Cart and wishlist">
+      <div class="cart-panel">
+        <div class="cart-header">
+          <h3>Cart 🧺 <small id="cartItemsCount">0 items</small></h3>
+          <button id="checkoutBtn" class="btn primary">Check out</button>
+          <button id="clearCartBtn" class="btn small danger">Clear Cart</button>
+        </div>
+        <ul id="cartList" class="list" role="list">
+          <!-- JS renders cart items with quantity controls (➕/➖) -->
+        </ul>
+        <div class="cart-footer">
+          <div class="cart-total" style="font-weight: bold;">Subtotal: ₹<span id="cartSubtotal">0</span></div>
+
+          
+        </div>
+      </div>
+
+      <div class="wishlist-panel">
+        <div class="wishlist-header">
+          <h3>Wishlist 💖 <small id="wishlistCount">0</small></h3>
+          <button id="clearWishlistBtn" class="btn outline">Clear</button>
+        </div>
+        <ul id="wishlist" class="list" role="list">
+          <!-- JS renders wishlist items -->
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <!-- PRODUCT QUICK VIEW / DETAILS MODAL -->
+  <div id="productModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-content">
+      <button id="closeModal" class="btn close" aria-label="Close">✖</button>
+      <div class="modal-body">
+        <img id="modalImage" alt="" class="modal-image" />
+        <div class="modal-info">
+          <h2 id="modalTitle">Product name</h2>
+          <p id="modalDesc">Product description goes here.</p>
+          <div class="modal-meta">
+            <div class="price">Price: ₹<span id="modalPrice">0</span></div>
+            <div class="qty-control">
+              <label for="modalQty">Qty</label>
+              <input id="modalQty" type="number" min="1" value="1" />
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button id="modalAddToCart" class="btn primary">Add to Cart</button>
+            <button id="modalAddToWishlist" class="btn outline">Add to Wishlist</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+
+  <!-- TEMPLATE SCRIPTS (optional for progressive enhancement) -->
+  <!--
+    You can keep your product data in script tag or load from external JS.
+    The JS will:
+      - render products
+      - handle search-as-you-type
+      - apply sorting & filtering
+      - add/remove/move between lists
+      - quantity adjustments
+      - localStorage persistence & toast notifications
+      - theme toggle
+      - responsive offcanvas for mobile
+  -->
+
+  <!-- Link to external JS (create script.js or paste JS later) -->
+  <script src="script.js" defer></script>
 </body>
 </html>
