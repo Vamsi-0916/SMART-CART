@@ -72,13 +72,22 @@ function showToast(msg, type = "success") {
 }
 
 function updateCounts() {
+  // update sidebar counts
   cartItemsCount.textContent = `${cart.length} items`;
   wishlistCount.textContent = wishlist.length;
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+  // compute totals
+  const total = cart.reduce((sum, item) => sum + (item.price || 0) * (item.qty || 1), 0);
   cartSubtotal.textContent = total;
   cartTotal.textContent = total;
-  document.getElementById("itemCountBadge").textContent = `(${cart.length})`;
+
+  // safely update optional badge if it exists
+  const badge = document.getElementById("itemCountBadge");
+  if (badge) {
+    badge.textContent = `(${cart.length})`;
+  }
 }
+
 
 // ---------- Render Products ----------
 function renderProducts(list = products) {
@@ -284,6 +293,12 @@ function openModal(id) {
 function closeModal() {
   modal.classList.add("hidden");
 }
+// ---------- Clear Search Button ----------
+const clearSearch = document.getElementById("clearSearch");
+clearSearch.addEventListener("click", () => {
+  searchInput.value = "";
+  renderProducts(); // show all products again
+});
 
 modalBackdrop.addEventListener("click", closeModal);
 closeModalBtn.addEventListener("click", closeModal);
@@ -329,6 +344,66 @@ function clearCart() {
     updateCartCount();
     showToast("Cart cleared successfully!");
   }
+}
+
+
+// ---------- Move item: Cart -> Wishlist ----------
+function moveToWishlist(id) {
+  const item = cart.find((i) => i.id === id);
+  if (!item) {
+    showToast("Item not found in cart", "error");
+    return;
+  }
+
+  // Remove from cart
+  cart = cart.filter((i) => i.id !== id);
+
+  // Add to wishlist (no qty)
+  if (!wishlist.find((w) => w.id === id)) {
+    const copy = { ...item };
+    delete copy.qty;
+    wishlist.push(copy);
+  }
+
+  saveData();
+
+  // Force consistent re-rendering order
+  renderProducts();
+  renderCart();
+  renderWishlist();
+  updateCounts();
+
+  showToast(`${item.name} moved to wishlist ❤️`);
+}
+
+// ---------- Move item: Wishlist -> Cart ----------
+function moveToCart(id) {
+  const item = wishlist.find((i) => i.id === id);
+  if (!item) {
+    showToast("Item not found in wishlist", "error");
+    return;
+  }
+
+  // Remove from wishlist
+  wishlist = wishlist.filter((i) => i.id !== id);
+
+  // Add to cart or increment
+  const existing = cart.find((c) => c.id === id);
+  if (existing) {
+    existing.qty = (existing.qty || 1) + 1;
+  } else {
+    cart.push({ ...item, qty: 1 });
+  }
+
+  saveData();
+
+  // Force consistent re-rendering order
+  renderProducts();
+  renderCart();
+  renderWishlist();
+  updateCounts();
+
+  showToast(`${item.name} moved to cart 🛒`);
 }
 
 
